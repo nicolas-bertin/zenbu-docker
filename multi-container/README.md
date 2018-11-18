@@ -26,12 +26,15 @@ After successful deployement, run `docker docker run --rm -it zenbu_app` for a l
 - We recommend to leave the `MYSQL_PASSWORD` stored in /secret/db_zenbu_password.txt as-is
 
 ## Deployement
-`docker-compose up`
+`docker-compose up -d`
 
-
-## Web site
-
+### Web site
 http://localhost/zenbu
+
+### logs
+- agent logs : `docker logs zenbu_agent_1`
+- mysql logs : `docker logs zenbu_db_1`
+- apache logs : `docker logs zenbu_www_1`
 
 ## Using command line tools
 
