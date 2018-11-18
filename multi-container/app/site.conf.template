@@ -1,0 +1,58 @@
+<VirtualHost *:80>
+
+
+    DocumentRoot {{ .Env.APACHE_DOCUMENTROOT }}
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+    </Directory>
+
+    <Directory /usr/share/>
+        Options Indexes FollowSymLinks MultiViews ExecCGI
+        AddHandler cgi-script .cgi
+        AllowOverride None
+
+        # Require all granted
+        # https://stackoverflow.com/questions/21265191/apache-authtype-not-set-500-error
+        # Require all granted is only in 2.4, but Allow all ... stops working in 2.4
+        Order allow,deny
+        Allow from all
+
+    </Directory>
+
+    <Directory {{ .Env.APACHE_DOCUMENTROOT }}/zenbu/>
+               Options +ExecCGI
+               AddHandler cgi-script .cgi .pl
+               AddHandler fcgid-script .fcgi
+    </Directory>
+
+    <Directory {{ .Env.APACHE_DOCUMENTROOT }}/zenbu/cgi/>
+               Options +ExecCGI
+               AddHandler cgi-script .cgi .pl
+               AddHandler fcgid-script .fcgi
+    </Directory>
+
+    ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+    <Directory "/usr/lib/cgi-bin">
+        AllowOverride None
+        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+
+        # Require all granted
+        # https://stackoverflow.com/questions/21265191/apache-authtype-not-set-500-error
+        # Require all granted is only in 2.4, but Allow all ... stops working in 2.4
+        Order allow,deny
+        Allow from all
+
+    </Directory>
+
+#    ErrorLog ${APACHE_LOG_DIR}/error.log
+#    better to have logs to stdout
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+#    CustomLog ${APACHE_LOG_DIR}/access.log combined
+#    better to have logs to stdout
+
+</VirtualHost>

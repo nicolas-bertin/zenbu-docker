@@ -1,9 +1,21 @@
-# Zenbu Docker 
+# ZENBU docker
+ZENBU is a data integration, data analysis, and visualization system enhanced for next-generation-sequence-tag (NGS) based data.
 
-To build the docker image run:
+ZENBU allows for novel data exploration through **"on-demand" data processing** and **interactive linked-visualizations** and is able to make many-views from the same primary sequence alignment data which users can uploaded from BAM, BED, GFF and tab-text files. 
 
-`docker build -t debian-zenbu:2.11.1 .`
+Data integration, data processing, and visualization system based around three main web interfaces: 
+  - an expression data enhanced genome browser interface
+  - a secured user system for data upload and secured data sharing
+  - a data explorer interface to find and manipulate data across the many supported experimental data types and to find shared user configurations"
 
-To execute the docker container run:
 
-`docker run -p 8082:80 debian-zenbu:2.11.1`
+## Adopt a ZENBU - docker version
+
+### Single-container docker
+
+> See single-container folder README.md 
+
+
+### Multi-container docker-compose
+
+> See multi-container folder README.md 

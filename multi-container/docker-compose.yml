@@ -1,0 +1,146 @@
+version: '3.4'
+
+x-zenbu-env: &ZENBU_SRC_DIR /usr/share/zenbu/src
+x-zenbu-env: &ZENBU_CONF_DIR /etc/zenbu
+x-zenbu-env: &ZENBU_WWW_DIR /usr/share/zenbu/www
+x-zenbu-env: &ZENBU_USERS_DIR /var/lib/zenbu/users
+x-zenbu-env: &ZENBU_CACHE_DIR /var/lib/zenbu/cache
+x-zenbu-env: &ZENBU_EXTDATA_DIR /mnt/projects
+
+
+services:
+
+  db:
+    image: mysql:5.7
+    secrets:
+      - db_root_password
+      - db_zenbu_password
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: zenbu_users
+      MYSQL_USER: zenbu_admin
+      MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
+    restart: always
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-datavolume:/var/lib/mysql
+      - ./db/1-create_database_and_users.sql:/docker-entrypoint-initdb.d/1-create_database_and_users.sql
+      - ./db/2-create_system_tables.sql:/docker-entrypoint-initdb.d/2-create_system_tables.sql
+      - ./db/3-create_eedb_tables.sql:/docker-entrypoint-initdb.d/3-create_eedb_tables.sql
+
+
+  www:
+    image: zenbu_app
+    build:
+      context: ./app/
+      target: app
+      args:
+        ZENBU_VERSION: 2.11
+        ZENBU_SRC_URL: https://github.com/jessica-severin/ZENBU_2.11
+        ZENBU_SRC_PATCH: ZENBU_2.11.patch
+        ZENBU_SRC_DIR: *ZENBU_SRC_DIR
+        ZENBU_CONF_DIR: *ZENBU_CONF_DIR
+        ZENBU_CONF_TEMPLATE: app.conf.template
+        ZENBU_WWW_DIR: *ZENBU_WWW_DIR
+        ZENBU_WWW_INIT_TEMPLATE: app.init.template
+        ZENBU_WWW_SITE_TEMPLATE: site.conf.template
+        ZENBU_USERS_DIR: *ZENBU_USERS_DIR
+        ZENBU_CACHE_DIR: *ZENBU_CACHE_DIR
+        ZENBU_AGENT_TEMPLATE: app.agent.template
+        ENTRYPOINT: docker-entrypoint.sh
+    secrets:
+      - smtp_password
+      - db_zenbu_password
+    environment:
+      ZENBU_SRC_DIR: *ZENBU_SRC_DIR
+      ZENBU_AGENT_BUILDTIME: 583
+      ZENBU_AGENT_LOADLIMIT: 0.8
+      ZENBU_AGENT_SLEEPTIME: 10
+      ZENBU_SRC_DIR: *ZENBU_SRC_DIR
+      ZENBU_WWW_DIR: *ZENBU_WWW_DIR
+      ZENBU_USERS_DIR: *ZENBU_USERS_DIR
+      ZENBU_CACHE_DIR: *ZENBU_CACHE_DIR
+      ZENBU_SESSID: ZENBU_c-BIG_SESSID
+      ZENBU_SESSNAME: "c-BIG zenbu"
+      SMTP_HOST: xxxxxxx
+      SMTP_FROM: c-big@gis.a-star.edu.sg
+      SMTP_USER: c-big@gis.a-star.edu.sg
+      SMTP_PASSWORD_FILE: /run/secrets/smtp_password 
+      ZENBU_CURATOR_EMAIL: c-big@gis.a-star.edu.sg
+      MYSQL_DATABASE: zenbu_users
+      MYSQL_USER: zenbu_admin
+      MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
+      APACHE_DOCUMENTROOT: *ZENBU_WWW_DIR
+      APACHE_SERVERADMIN: c-big@gis.a-star.edu.sg
+      APACHE_SERVERALIAS: xxxxxxx
+      APACHE_SERVERNAME: xxxxxxx
+    depends_on:
+      - db
+    volumes:
+      - {target: *ZENBU_SRC_DIR,     source: src-datavolume,    type: volume}
+      - {target: *ZENBU_CONF_DIR,    source: conf-datavolume,   type: volume}
+      - {target: *ZENBU_WWW_DIR,     source: www-datavolume,    type: volume}
+      - {target: *ZENBU_USERS_DIR,   source: users-datavolume,  type: volume}
+      - {target: *ZENBU_CACHE_DIR,   source: cache-datavolume,  type: volume}
+      - {target: *ZENBU_EXTDATA_DIR, source: datalake-readonly-nfsvolume, type: volume, read_only: true, volume: {nocopy: true}}
+    ports:
+      - "80:80"
+    restart: always
+    entrypoint: "/usr/local/bin/dockerize" 
+    command: [ "-template", "/usr/share/zenbu/src/site.conf.template:/etc/apache2/sites-enabled/zenbu.conf", 
+               "-template", "/usr/share/zenbu/src/app.conf.template:/etc/zenbu/zenbu.conf", 
+               "-template", "/usr/share/zenbu/src/app.init.template:/app.init", 
+               "-template", "/usr/share/zenbu/src/app.agent.template:/app.agent",
+               "-stdout", "/var/log/apache2/access.log", 
+               "-stderr", "/var/log/apache2/error.log", 
+               "-wait", "tcp://db:3306", "-timeout", "60s", 
+               "/app.init" ]
+
+
+  agent:
+    image: zenbu_app
+    depends_on:
+      - db
+      - www
+    environment:
+      ZENBU_SRC_DIR: *ZENBU_SRC_DIR
+      ZENBU_AGENT_BUILDTIME: 583
+      ZENBU_AGENT_LOADLIMIT: 0.8
+      ZENBU_AGENT_SLEEPTIME: 10
+    volumes:
+      - {target: *ZENBU_SRC_DIR,     source: src-datavolume,    type: volume}
+      - {target: *ZENBU_CONF_DIR,    source: conf-datavolume,   type: volume}
+      - {target: *ZENBU_USERS_DIR,   source: users-datavolume,  type: volume}
+      - {target: *ZENBU_CACHE_DIR,   source: cache-datavolume,  type: volume}
+      - {target: *ZENBU_EXTDATA_DIR, source: datalake-readonly-nfsvolume, type: volume, read_only: true, volume: {nocopy: true}}
+    restart: always
+    entrypoint: "/usr/local/bin/dockerize" 
+    command: [ "-template", "/usr/share/zenbu/src/app.agent.template:/app.agent",
+               "-wait", "tcp://www:80", "-timeout", "60s",
+               "-wait", "tcp://db:3306", "-timeout", "60s",
+               "/app.agent" ]
+
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_zenbu_password:
+    file: ./secrets/db_zenbu_password.txt
+  smtp_password:
+    file: ./secrets/smtp_password.txt
+
+
+volumes:
+  db-datavolume:
+  www-datavolume:
+  conf-datavolume:
+  src-datavolume:
+  cache-datavolume:
+  users-datavolume:
+  datalake-readonly-nfsvolume:
+#    driver_opts:
+#      type: "nfs"
+#      o: "addr=xxxxxxx,nolock,soft,ro"
+#      device: ":xxxxxxx"
+
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+while [ 1==1 ]; do  
+echo -n "launch zenbu agents :: "  
+date
+zenbu_track_builder -build -buildtime {{ .Env.ZENBU_AGENT_BUILDTIME }} -loadlimit {{ .Env.ZENBU_AGENT_LOADLIMIT }}&
+zenbu_job_runner -run&
+sleep {{ .Env.ZENBU_AGENT_SLEEPTIME }}; 
+done

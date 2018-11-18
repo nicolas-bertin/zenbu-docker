@@ -1,0 +1,43 @@
+diff -rupN src/c++/tools/Makefile src.patched/c++/tools/Makefile
+--- src/c++/tools/Makefile	2016-12-01 16:59:16.000000000 +0800
++++ src.patched/c++/tools/Makefile	2018-07-30 09:45:22.730981403 +0800
+@@ -72,7 +72,7 @@ clean:
+ 	   zenbu_ncbi_genome_load
+ 
+ install:
+-	cp -f zenbu_edit_source_metadata zenbu_federation_upgrade zenbu_lsarchive_sync zenbu_register_peer zenbu_upload \
++	cp -f zenbu_edit_source_metadata zenbu_federation_upgrade zenbu_lsarchive_sync zenbu_register_peer zenbutools zenbu_upload \
+            zenbu_test_peer zenbu_create_OSCFileDB zenbu_job_runner zenbu_track_builder zenbu_create_filedb zenbu_agent_launcher.sh \
+            zenbu_config_manager zenbu_ncbi_genome_load \
+            /usr/local/bin/
+diff -rupN src/c++/EEDB/WebServices/zenbu_common.cpp src.patched/c++/EEDB/WebServices/zenbu_common.cpp
+--- src/c++/EEDB/WebServices/zenbu_common.cpp	2016-06-03 13:50:16.000000000 +0800
++++ src.patched/c++/EEDB/WebServices/zenbu_common.cpp	2018-08-05 16:09:30.455556719 +0800
+@@ -113,9 +113,9 @@ void  send_email(string email, string su
+   if(!_smtp_server_user.empty()) {
+     curl_easy_setopt(curl, CURLOPT_USERNAME, _smtp_server_user.c_str());
+     curl_easy_setopt(curl, CURLOPT_PASSWORD, _smtp_server_passwd.c_str());
+-  } else {
+-    //curl_easy_setopt(curl, CURLOPT_VERBOSE, "1");
+     curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
++  } else {
++    curl_easy_setopt(curl, CURLOPT_VERBOSE, "1");
+   } 
+   
+   /* Note that this option isn't strictly required, omitting it will result in
+@@ -143,10 +143,11 @@ void  send_email(string email, string su
+    */ 
+   string tpath = "/tmp/emsg_" + MQDB::uuid_b64string();
+   FILE *msgfp = fopen(tpath.c_str(), "w");
+-  fprintf(msgfp, "To: %s\n", email.c_str());
+-  fprintf(msgfp, "From: %s\n", _smtp_from.c_str());
+-  fprintf(msgfp, "Subject: %s\n", subject.c_str());
+-  fprintf(msgfp, "%s", message.c_str());
++  fprintf(msgfp, "To: %s\r\n", email.c_str());
++  fprintf(msgfp, "From: %s\r\n", _smtp_from.c_str());
++  fprintf(msgfp, "Subject: %s\r\n", subject.c_str());
++  fprintf(msgfp, "\r\n"), /* empty line to divide headers from body, see RFC5322 */
++  fprintf(msgfp, "%s\r\n", message.c_str());
+   fclose(msgfp);
+ 
+   msgfp = fopen(tpath.c_str(), "r");

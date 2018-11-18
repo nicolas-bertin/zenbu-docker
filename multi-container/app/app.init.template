@@ -1,0 +1,9 @@
+#!/bin/bash
+
+## register peer
+echo "registering newpeer ..."
+/usr/local/bin/zenbu_register_peer -url "mysql://{{ .Env.MYSQL_USER }}:{{ file .Env.MYSQL_PASSWORD_FILE }}@db:3306/{{ .Env.MYSQL_DATABASE }}" -newpeer
+
+
+## start httpd/apachectl
+/usr/sbin/apache2ctl -D FOREGROUND

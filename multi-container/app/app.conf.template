@@ -1,0 +1,39 @@
+<zenbu_server_config>
+  <eedb_root>{{ .Env.ZENBU_SRC_DIR }}</eedb_root>
+  <eedb_user_rootdir>{{ .Env.ZENBU_USERS_DIR }}</eedb_user_rootdir>
+  <cache_dir>{{ .Env.ZENBU_CACHE_DIR }}</cache_dir>
+
+  <user_db>mysql://{{ .Env.MYSQL_USER }}:{{ file .Env.MYSQL_PASSWORD_FILE }}@db:3306/{{ .Env.MYSQL_DATABASE }}</user_db>
+  <user_admin_password>{{ file .Env.MYSQL_PASSWORD_FILE }}</user_admin_password>
+
+  <smtp_server>{{ .Env.SMTP_HOST }}</smtp_server> <example>smtps://postman.riken.jp</example>
+  <smtp_user>{{ .Env.SMTP_USER }}</smtp_user>
+  <smtp_password>{{ file .Env.SMTP_PASSWORD_FILE }}</smtp_password>
+  <smtp_from>{{ .Env.SMTP_FROM }}</smtp_from> <example>zenbu@riken.jp</example>
+
+  <federation_seeds>
+      <seed>zenbu://fantom.gsc.riken.jp/zenbu</seed> <note>keep this "zenbu://fantom.gsc.riken.jp/zenbu" seed at the bottom</note>
+  </federation_seeds>
+
+  <public_collaboration>
+      <name>public sharing - {{ .Env.ZENBU_SESSNAME }}</name>
+      <description>collaboration for sharing public data, views, tracks, scripts on {{ .Env.ZENBU_SESSNAME }}</description>
+  </public_collaboration>
+
+  <curated_collaboration>
+      <name>curated - {{ .Env.ZENBU_SESSNAME }}</name>
+      <description>curated data collaboration for {{ .Env.ZENBU_SESSNAME }}</description>
+      <curators>
+        <user>{{ .Env.ZENBU_CURATOR_EMAIL }}</user>
+      </curators>
+  </curated_collaboration>
+
+  <default_genome>hg19</default_genome>
+
+  <session_name>{{ .Env.ZENBU_SESSID }}</session_name>
+  <server_name>{{ .Env.APACHE_SERVERNAME }}</server_name>
+  <web_root>http://{{ .Env.APACHE_SERVERNAME }}/zenbu</web_root>
+  <web_uuid>{{ exeCmd "uuidgen" }}</web_uuid>
+
+</zenbu_server_config>
+
