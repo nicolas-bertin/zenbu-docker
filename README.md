@@ -8,6 +8,10 @@ Data integration, data processing, and visualization system based around three m
   - a secured user system for data upload and secured data sharing
   - a data explorer interface to find and manipulate data across the many supported experimental data types and to find shared user configurations"
 
+## RIKEN ZENBU
+
+Don't wanna bother installing a local version. Simply visit the original ZENBU genome browser and create an user account : http://fantom.gsc.riken.jp/zenbu/ 
+
 
 ## Adopt a ZENBU - docker version
 
