@@ -28,14 +28,17 @@ After successful deployement, run `docker docker run --rm -it zenbu_app` for a l
 ## Deployement
 `docker-compose up`
 
-## Using command line tools
-### zenbu_upload
-- login/create a user account from http://localhost/zenbu/user/ 
-- create a file called `~/.zenbu/id_hmac` containing your user account email and the `hmac` key as a tab delimited key/value pair
-- run 
-`docker docker run --rm -v ~/.zenbu/id_hmac:/root/.zenbu/id_hmac -it zenbu_app zenbu_upload -url http://localhost/zenbu -collabs`
 
 ## Web site
 
 http://localhost/zenbu
+
+## Using command line tools
+example : gettig your list of collabaroations via `zenbu_upload`
+- login/create a user account from http://localhost/zenbu/user/ 
+- create a file called `~/.zenbu/id_hmac` containing your user account email and the `hmac` key as a tab delimited key/value pair
+- run 
+
+`docker docker run --rm -v ~/.zenbu/id_hmac:/root/.zenbu/id_hmac -it zenbu_app zenbu_upload -url http://localhost/zenbu -collabs`
+
 
