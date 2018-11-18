@@ -5,20 +5,20 @@ Simply distributed ZENBU genome browser application running across multiple cont
 - zenbu_www (apache-based httpd)
 - zenbu_agent (for automated cache building and uploaded data preparation)
 
-Two images will be created : a `mysql` image and a `zenbu_app` image
-The `zenbu_app` image is the basis for agents, webservices and running ad-hoc command line tools
+Two images will be created : a `mysql` image and a `zenbu_app` image. 
+The `zenbu_app` image is the basis for agents, webservices and running ad-hoc command line tools.
 
 ZENBU offers a number of command line tools to manipulate the data.
-After successful deployement, run `docker docker run --rm -it zenbu_app` for a list of command line tools
+After successful deployement, run `docker docker run --rm -it zenbu_app` for a list of command line tools.
 
 ## Initial setup
 ### docker-compose.yaml
-- You will need to minimally edit several environment valirables left blank :
-   - SMTP environment valirables: `SMTP_HOST`, `SMTP_USER`.  Note : `SMTP_PASSWORD` is read from a file in /secrets/smtp_password.txt
+- You will need to minimally edit several environment variables left blank :
+   - SMTP environment variables: `SMTP_HOST`, `SMTP_USER`.  Note : `SMTP_PASSWORD` is read from a file in /secrets/smtp_password.txt
    - http server's name & alias: `APACHE_SERVERALIAS`, `APACHE_SERVERNAME`
 - Several other non-essential environment variables have also been left blank : `APACHE_SERVERADMIN`, `ZENBU_CURATOR_EMAIL`
 - We recommend to leave the `MYSQL_PASSWORD` stored in /secret/db_zenbu_password.txt as-is
-- Named volumes : volumes where mysql, user, and cache data are stored can be customized to be physiocally associated with host mountpoints
+- Named volumes : volumes where mysql, user, and cache data are stored can be customized to correspond to be actual host's mountpoints
 
 ### secrets
 - Edit the secret file `smtp_password.txt` containing the password associated with `${SMTP_USER}` 
@@ -28,8 +28,14 @@ After successful deployement, run `docker docker run --rm -it zenbu_app` for a l
 ## Deployement
 `docker-compose up`
 
+## Using command line tools
+### zenbu_upload
+- login/create a user account from http://localhost/zenbu/user/ 
+- create a file called `~/.zenbu/id_hmac` containing your user account email and the `hmac` key as a tab delimited key/value pair
+- run 
+`docker docker run --rm -v ~/.zenbu/id_hmac:/root/.zenbu/id_hmac -it zenbu_app zenbu_upload -url http://localhost/zenbu -collabs`
 
 ## Web site
 
-http://{APACHE_SERVERNAME}/zenbu
+http://localhost/zenbu
 
