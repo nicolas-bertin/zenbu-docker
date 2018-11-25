@@ -122,7 +122,7 @@ CREATE TABLE `collaboration_2_user` (
 
 CREATE TABLE `sessions` (
   `id` varchar(64) NOT NULL default '',
-  `a_session` text NOT NULL default '',
+  `a_session` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -346,11 +346,8 @@ CREATE TABLE job (
   status                    enum('READY','BLOCKED','CLAIMED','RUN','DONE','FAILED') DEFAULT 'READY' NOT NULL,
   retry_count               int default 0 not NULL,
   created timestamp         NOT NULL default CURRENT_TIMESTAMP,
-  completed                 datetime NOT NULL,
-  branch_code               int default 1 NOT NULL,
-  runtime_msec              int default 0 NOT NULL, 
-  query_count               int default 0 NOT NULL,
   starttime                 datetime NOT NULL,
+  completed                 datetime NOT NULL,
   runtime                   int default 0 NOT NULL,
   host                      varchar(64) NOT NULL default '',
   process_id                int(11) NOT NULL default '0',

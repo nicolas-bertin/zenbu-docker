@@ -11,18 +11,19 @@ x-zenbu-env: &ZENBU_EXTDATA_DIR /mnt/projects
 services:
 
   db:
-    image: mysql:5.7
-    secrets:
-      - db_root_password
-      - db_zenbu_password
-    environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-      MYSQL_DATABASE: zenbu_users
-      MYSQL_USER: zenbu_admin
-      MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
+    image: mysql:5.5
+#    secrets:
+#      - db_root_password
+#      - db_zenbu_password
+#    environment:
+#      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+#      MYSQL_DATABASE: zenbu_users
+#      MYSQL_USER: zenbu_admin
+#      MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
     restart: always
     ports:
-      - "3307:3306"
+#      - "3307:3306"
+       - "3306"
     volumes:
       - db-datavolume:/var/lib/mysql
       - ./db/1-create_database_and_users.sql:/docker-entrypoint-initdb.d/1-create_database_and_users.sql
