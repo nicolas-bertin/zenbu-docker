@@ -15,11 +15,12 @@ services:
 #    secrets:
 #      - db_root_password
 #      - db_zenbu_password
-#    environment:
+    environment:
 #      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
 #      MYSQL_DATABASE: zenbu_users
 #      MYSQL_USER: zenbu_admin
 #      MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
+       MYSQL_RANDOM_ROOT_PASSWORD: yes
     restart: always
     ports:
 #      - "3307:3306"
