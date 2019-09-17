@@ -20,11 +20,11 @@ services:
 #      MYSQL_DATABASE: zenbu_users
 #      MYSQL_USER: zenbu_admin
 #      MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
-       MYSQL_RANDOM_ROOT_PASSWORD: yes
+       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     restart: always
-    ports:
+#    ports:
 #      - "3307:3306"
-       - "3306"
+#       - "3306"
     volumes:
       - db-datavolume:/var/lib/mysql
       - ./db/1-create_database_and_users.sql:/docker-entrypoint-initdb.d/1-create_database_and_users.sql
@@ -38,7 +38,7 @@ services:
       context: ./app/
       target: app
       args:
-        ZENBU_VERSION: 2.11
+        ZENBU_VERSION: ${VERSION:-2.11}
         ZENBU_SRC_URL: https://github.com/jessica-severin/ZENBU_2.11
         ZENBU_SRC_PATCH: ZENBU_2.11.patch
         ZENBU_SRC_DIR: *ZENBU_SRC_DIR
@@ -74,9 +74,9 @@ services:
       MYSQL_USER: zenbu_admin
       MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
       APACHE_DOCUMENTROOT: *ZENBU_WWW_DIR
-      APACHE_SERVERADMIN: c-big@gis.a-star.edu.sg
-      APACHE_SERVERALIAS: xxxxxxx
-      APACHE_SERVERNAME: xxxxxxx
+      APACHE_SERVERADMIN: ${EMAIL:-admin@localhost}
+      APACHE_SERVERALIAS: ${DOMAIN:-localhost}
+      APACHE_SERVERNAME: ${DOMAIN:-localhost}
     depends_on:
       - db
     volumes:
