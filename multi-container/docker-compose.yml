@@ -140,7 +140,8 @@ volumes:
   cache-datavolume:
   users-datavolume:
   datalake-readonly-nfsvolume:
+    driver: local
     driver_opts:
-      type: "nfs"
-      o: "addr=${NFS_DATALAKE_IP},nolock,soft,ro"
+      type: "nfs4"
+      o: "addr=${NFS_DATALAKE_IP},ro"
       device: ":${NFS_DATALAKE_DEVICE}"
