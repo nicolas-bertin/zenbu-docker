@@ -18,9 +18,9 @@ After successful deployement, run `docker docker run --rm -it zenbu_app` for a l
    - http server's name & alias: `DOMAIN`. Default as localhost
 
 ### secrets
-- Edit the secret file `smtp_password.txt` containing the password associated with `${SMTP_USER}` 
-- Editing the `MYSQL_ROOT_PASSWORD` stored in /secret/db_root_password.txt is optional
-- We recommend to leave the `MYSQL_PASSWORD` stored in /secret/db_zenbu_password.txt as-is
+- Create a `/secrets/smtp_password.txt` containing the `SMTP_PASSWORD` associated with `SMTP_USER` 
+- Editing the `MYSQL_ROOT_PASSWORD` stored in `/secret/db_root_password.txt` is optional
+- We recommend to leave the `MYSQL_PASSWORD` stored in `/secret/db_zenbu_password.txt` as-is
 
 ### docker-compose.yml
 - Named volumes : volumes where mysql, user, and cache data are stored can be customized to correspond to be actual host's mountpoints
