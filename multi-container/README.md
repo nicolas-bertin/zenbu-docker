@@ -12,18 +12,18 @@ ZENBU offers a number of command line tools to manipulate the data.
 After successful deployement, run `docker docker run --rm -it zenbu_app` for a list of command line tools.
 
 ## Initial setup
-### docker-compose.yaml
-- You will need to minimally edit several environment variables left blank :
+### .env
+- You will likely need to minimally edit several environment variables :
    - SMTP environment variables: `SMTP_HOST`, `SMTP_USER`.  Note : `SMTP_PASSWORD` is read from a file in /secrets/smtp_password.txt
-   - http server's name & alias: `APACHE_SERVERALIAS`, `APACHE_SERVERNAME`
-- Several other non-essential environment variables have also been left blank : `APACHE_SERVERADMIN`, `ZENBU_CURATOR_EMAIL`
-- We recommend to leave the `MYSQL_PASSWORD` stored in /secret/db_zenbu_password.txt as-is
-- Named volumes : volumes where mysql, user, and cache data are stored can be customized to correspond to be actual host's mountpoints
+   - http server's name & alias: `DOMAIN`. Default as localhost
 
 ### secrets
 - Edit the secret file `smtp_password.txt` containing the password associated with `${SMTP_USER}` 
 - Editing the `MYSQL_ROOT_PASSWORD` stored in /secret/db_root_password.txt is optional
 - We recommend to leave the `MYSQL_PASSWORD` stored in /secret/db_zenbu_password.txt as-is
+
+### docker-compose.yml
+- Named volumes : volumes where mysql, user, and cache data are stored can be customized to correspond to be actual host's mountpoints
 
 ## Deployement
 `docker-compose up -d`

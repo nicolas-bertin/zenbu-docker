@@ -38,9 +38,9 @@ services:
       context: ./app/
       target: app
       args:
-        ZENBU_VERSION: ${VERSION:-2.11}
-        ZENBU_SRC_URL: https://github.com/jessica-severin/ZENBU_2.11
-        ZENBU_SRC_PATCH: ZENBU_2.11.patch
+        ZENBU_VERSION: ${ZENBU_VERSION:-2.11}
+        ZENBU_SRC_URL: ${ZENBU_SRC_URL:-https://github.com/jessica-severin/ZENBU_2.11}
+        ZENBU_SRC_PATCH: ${ZENBU_SRC_PATCH:-ZENBU_2.11.patch}
         ZENBU_SRC_DIR: *ZENBU_SRC_DIR
         ZENBU_CONF_DIR: *ZENBU_CONF_DIR
         ZENBU_CONF_TEMPLATE: app.conf.template
@@ -63,13 +63,13 @@ services:
       ZENBU_WWW_DIR: *ZENBU_WWW_DIR
       ZENBU_USERS_DIR: *ZENBU_USERS_DIR
       ZENBU_CACHE_DIR: *ZENBU_CACHE_DIR
-      ZENBU_SESSID: ZENBU_c-BIG_SESSID
-      ZENBU_SESSNAME: "c-BIG zenbu"
-      SMTP_HOST: xxxxxxx
-      SMTP_FROM: c-big@gis.a-star.edu.sg
-      SMTP_USER: c-big@gis.a-star.edu.sg
+      ZENBU_SESSID: ${ZENBU_SESSID:-ZENBU_c-BIG_SESSID}
+      ZENBU_SESSNAME: ${ZENBU_SESSNAME:-c-BIG zenbu}
+      SMTP_HOST: ${SMTP_HOST:-smtp://smtp.localhost:587}
+      SMTP_USER: ${SMTP_USER:-admin@localhost}
       SMTP_PASSWORD_FILE: /run/secrets/smtp_password 
-      ZENBU_CURATOR_EMAIL: c-big@gis.a-star.edu.sg
+      SMTP_FROM: ${EMAIL:-admin@localhost}
+      ZENBU_CURATOR_EMAIL: ${EMAIL:-admin@localhost}
       MYSQL_DATABASE: zenbu_users
       MYSQL_USER: zenbu_admin
       MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
@@ -140,9 +140,7 @@ volumes:
   cache-datavolume:
   users-datavolume:
   datalake-readonly-nfsvolume:
-#    driver_opts:
-#      type: "nfs"
-#      o: "addr=xxxxxxx,nolock,soft,ro"
-#      device: ":xxxxxxx"
-
-
+    driver_opts:
+      type: "nfs"
+      o: "addr=${NFS_DATALAKE_IP},nolock,soft,ro"
+      device: ":${NFS_DATALAKE_DEVICE}"
