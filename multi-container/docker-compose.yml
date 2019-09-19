@@ -143,5 +143,5 @@ volumes:
     driver: local
     driver_opts:
       type: "nfs4"
-      o: "addr=${NFS_DATALAKE_IP},ro"
+      o: "addr=${NFS_DATALAKE_IP},soft,ro"
       device: ":${NFS_DATALAKE_DEVICE}"
