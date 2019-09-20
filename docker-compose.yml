@@ -32,9 +32,9 @@ services:
       context: ./app/
       target: app
       args:
-        ZENBU_VERSION: ${ZENBU_VERSION:-2.11}
-        ZENBU_SRC_URL: ${ZENBU_SRC_URL:-https://github.com/jessica-severin/ZENBU_2.11}
-        ZENBU_SRC_PATCH: ${ZENBU_SRC_PATCH:-ZENBU_2.11.patch}
+        ZENBU_VERSION: ${ZENBU_VERSION:-694dd8f}
+        ZENBU_SRC_URL: ${ZENBU_SRC_URL:-https://github.com/jessica-severin/ZENBU}
+        ZENBU_SRC_PATCH: ${ZENBU_SRC_PATCH:-ZENBU_694dd8f.patch}
         ZENBU_SRC_DIR: *ZENBU_SRC_DIR
         ZENBU_CONF_DIR: *ZENBU_CONF_DIR
         ZENBU_CONF_TEMPLATE: app.conf.template

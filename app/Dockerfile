@@ -47,9 +47,9 @@ LABEL description=" \
 LABEL website="http://fantom.gsc.riken.jp/zenbu/"
 LABEL github="https://github.com/jessica-severin/ZENBU"
 
-ARG ZENBU_VERSION="2.11"
+ARG ZENBU_VERSION="694dd8f"
 LABEL version=${ZENBU_VERSION}
-ARG ZENBU_SRC_URL="https://github.com/jessica-severin/ZENBU_${ZENBU_VERSION}"
+ARG ZENBU_SRC_URL="https://github.com/jessica-severin/ZENBU"
 ARG ZENBU_SRC_DIR="/usr/share/zenbu/src/"
 
 ARG ZENBU_SRC_PATCH="ZENBU_${ZENBU_VERSION}.patch"
@@ -115,6 +115,7 @@ RUN set -eux; \
         mkdir -p ${ZENBU_SRC_DIR}; \
         cd ${ZENBU_SRC_DIR}; \
         git clone ${ZENBU_SRC_URL} . ; \
+        git checkout ${ZENBU_VERSION}; \
         patch -p1 < ../src.patch; \
 ## copy the perl lib objects to /usr/share/zenbu/src/ZENBU/lib
         mkdir ${ZENBU_SRC_DIR}/ZENBU; \
@@ -147,7 +148,7 @@ FROM builder as app
 #   - make apache2 access.log & error.log to docker logs (stdout & stderr reespectively)
 #   ...and start apache2 process    
 #
-ARG ZENBU_VERSION="2.11"
+ARG ZENBU_VERSION="694dd8f"
 ARG ZENBU_AGENT_TEMPLATE="app.agent.template"
 ARG ZENBU_WWW_INIT_TEMPLATE="app.init.template"
 ARG ZENBU_WWW_SITE_TEMPLATE="site.conf.template"
