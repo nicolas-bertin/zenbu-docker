@@ -36,8 +36,8 @@ in which case deploy using both docker-compose.yml and docker-compose.with_datal
 
 
 ## Deployement
-`docker-compose --file=$PWD/docker-compose.yml -d`
-or `docker-compose --file=$PWD/docker-compose.yml --file=$PWD/docker-compose.with_datalake-readonly-nfsvolume.yml -d` to add an NFS-based datalake (readonly) volume
+`docker-compose --file=$PWD/docker-compose.yml --project_name zenbu -d up`
+or `docker-compose --file=$PWD/docker-compose.yml --file=$PWD/docker-compose.with_datalake-readonly-nfsvolume.yml --project_name zenbu -d up` to add an NFS-based datalake (readonly) volume
 
 ### Web site
 default http://localhost/zenbu
@@ -52,9 +52,9 @@ or http://${DOMAIN}/zenbu if the `DOMAIN` envvar was provided
 ## Using command line tools
 
 **example : gettig your list of collabaroations via `zenbu_upload`**
-- login/create a user account from http://localhost/zenbu/user/ (or http://${DOMAIN}/zenbu/user/)
+- login/create a user account from zenbu website (e.g. http://localhost/zenbu/user/
 - create a file called `~/.zenbu/id_hmac` containing your user account email and the `hmac` key as a tab delimited key/value pair
-- run the `zenbu_app` image as a temprary container mounting your `~/.zenbu/id_hmac` credentials  
-`docker docker run --rm -v ~/.zenbu/id_hmac:/root/.zenbu/id_hmac -it zenbu_app zenbu_upload -url http://localhost/zenbu -collabs`
+- run the `zenbu_app` image as a temprary container to which your `~/.zenbu/id_hmac` credentials and zenbu_agent volumes are mounted :  
+`docker docker run --rm --volume-from zenbu_agent_1 --volume ~/.zenbu/id_hmac:/root/.zenbu/id_hmac -it zenbu_app    zenbu_upload -url http://localhost/zenbu -collabs`
 
 
