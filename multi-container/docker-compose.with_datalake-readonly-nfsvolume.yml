@@ -1,0 +1,21 @@
+version: '3.4'
+
+x-zenbu-env: &ZENBU_EXTDATA_DIR /mnt/projects
+
+
+services:
+  www:
+    volumes:
+      - {target: *ZENBU_EXTDATA_DIR, source: datalake-readonly-nfsvolume, type: volume, read_only: true, volume: {nocopy: true}}
+
+  agent:
+    volumes:
+      - {target: *ZENBU_EXTDATA_DIR, source: datalake-readonly-nfsvolume, type: volume, read_only: true, volume: {nocopy: true}}
+
+volumes:
+  datalake-readonly-nfsvolume:
+    driver: local
+    driver_opts:
+      type: "nfs4"
+      o: "addr=${NFS_DATALAKE_IP},soft,ro"
+      device: ":${NFS_DATALAKE_DEVICE}"

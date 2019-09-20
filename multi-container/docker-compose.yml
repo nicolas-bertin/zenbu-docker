@@ -5,26 +5,20 @@ x-zenbu-env: &ZENBU_CONF_DIR /etc/zenbu
 x-zenbu-env: &ZENBU_WWW_DIR /usr/share/zenbu/www
 x-zenbu-env: &ZENBU_USERS_DIR /var/lib/zenbu/users
 x-zenbu-env: &ZENBU_CACHE_DIR /var/lib/zenbu/cache
-x-zenbu-env: &ZENBU_EXTDATA_DIR /mnt/projects
 
 
 services:
 
   db:
     image: mysql:5.5
-#    secrets:
-#      - db_root_password
-#      - db_zenbu_password
+    secrets:
+      - db_zenbu_password
     environment:
-#      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-#      MYSQL_DATABASE: zenbu_users
-#      MYSQL_USER: zenbu_admin
-#      MYSQL_PASSWORD_FILE: /run/secrets/db_zenbu_password
-       - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=zenbu_users
+      - MYSQL_USER=zenbu_admin
+      - MYSQL_PASSWORD_FILE=/run/secrets/db_zenbu_password
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
     restart: always
-#    ports:
-#      - "3307:3306"
-#       - "3306"
     volumes:
       - db-datavolume:/var/lib/mysql
       - ./db/1-create_database_and_users.sql:/docker-entrypoint-initdb.d/1-create_database_and_users.sql
@@ -85,7 +79,6 @@ services:
       - {target: *ZENBU_WWW_DIR,     source: www-datavolume,    type: volume}
       - {target: *ZENBU_USERS_DIR,   source: users-datavolume,  type: volume}
       - {target: *ZENBU_CACHE_DIR,   source: cache-datavolume,  type: volume}
-      - {target: *ZENBU_EXTDATA_DIR, source: datalake-readonly-nfsvolume, type: volume, read_only: true, volume: {nocopy: true}}
     ports:
       - "80:80"
     restart: always
@@ -115,7 +108,6 @@ services:
       - {target: *ZENBU_CONF_DIR,    source: conf-datavolume,   type: volume}
       - {target: *ZENBU_USERS_DIR,   source: users-datavolume,  type: volume}
       - {target: *ZENBU_CACHE_DIR,   source: cache-datavolume,  type: volume}
-      - {target: *ZENBU_EXTDATA_DIR, source: datalake-readonly-nfsvolume, type: volume, read_only: true, volume: {nocopy: true}}
     restart: always
     entrypoint: "/usr/local/bin/dockerize" 
     command: [ "-template", "/usr/share/zenbu/src/app.agent.template:/app.agent",
@@ -124,8 +116,6 @@ services:
                "/app.agent" ]
 
 secrets:
-  db_root_password:
-    file: ./secrets/db_root_password.txt
   db_zenbu_password:
     file: ./secrets/db_zenbu_password.txt
   smtp_password:
@@ -139,9 +129,3 @@ volumes:
   src-datavolume:
   cache-datavolume:
   users-datavolume:
-  datalake-readonly-nfsvolume:
-    driver: local
-    driver_opts:
-      type: "nfs4"
-      o: "addr=${NFS_DATALAKE_IP},soft,ro"
-      device: ":${NFS_DATALAKE_DEVICE}"
