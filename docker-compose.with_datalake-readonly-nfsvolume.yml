@@ -2,7 +2,6 @@ version: '3.4'
 
 x-zenbu-env: &ZENBU_EXTDATA_DIR /mnt/projects
 
-
 services:
   www:
     volumes:

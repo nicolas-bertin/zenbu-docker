@@ -27,7 +27,7 @@ services:
 
 
   www:
-    image: zenbu_app
+    image: zenbu_app:${ZENBU_VERSION:-694dd8f}
     build:
       context: ./app/
       target: app
