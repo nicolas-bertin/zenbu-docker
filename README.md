@@ -76,6 +76,6 @@ or `docker-compose --file=$PWD/docker-compose.yml --file=$PWD/docker-compose.wit
 - login/create a user account from zenbu website (e.g. http://localhost/zenbu/user/
 - create a file called `~/.zenbu/id_hmac` containing your user account email and the `hmac` key as a tab delimited key/value pair
 - run the `zenbu_app` image as a temprary container to which your `~/.zenbu/id_hmac` credentials and zenbu_agent volumes are mounted :  
-`docker run --rm --volume-from zenbu_agent_1 --volume ~/.zenbu/id_hmac:/root/.zenbu/id_hmac -it zenbu_app    zenbu_upload -url http://localhost/zenbu -collabs`
+`docker run --rm --volumes-from zenbu_agent_1 --volume ~/.zenbu/id_hmac:/root/.zenbu/id_hmac -it zenbu_app    zenbu_upload -url http://localhost/zenbu -collabs`
 
 

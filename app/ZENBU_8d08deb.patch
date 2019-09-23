@@ -1,19 +1,28 @@
 diff -rupN src/c++/tools/Makefile src.patched/c++/tools/Makefile
---- src/c++/tools/Makefile	2016-12-01 16:59:16.000000000 +0800
-+++ src.patched/c++/tools/Makefile	2018-07-30 09:45:22.730981403 +0800
-@@ -72,7 +72,7 @@ clean:
- 	   zenbu_ncbi_genome_load
+--- src/c++/tools/Makefile	2019-09-23 09:08:44.791548201 +0800
++++ src.patched/c++/tools/Makefile	2019-09-23 09:17:44.437983760 +0800
+@@ -75,10 +75,11 @@ clean:
+ 	   zenbu_ncbi_genome_load zenbu_sql_load_oscfile
  
  install:
 -	cp -f zenbu_edit_source_metadata zenbu_federation_upgrade zenbu_lsarchive_sync zenbu_register_peer zenbu_upload \
+-           zenbu_test_peer zenbu_create_OSCFileDB zenbu_job_runner zenbu_track_builder zenbu_create_filedb zenbu_agent_launcher.sh \
+-           zenbu_config_manager zenbu_ncbi_genome_load zenbu_sql_load_oscfile \
+-           ~/bin/
 +	cp -f zenbu_edit_source_metadata zenbu_federation_upgrade zenbu_lsarchive_sync zenbu_register_peer zenbutools zenbu_upload \
-            zenbu_test_peer zenbu_create_OSCFileDB zenbu_job_runner zenbu_track_builder zenbu_create_filedb zenbu_agent_launcher.sh \
-            zenbu_config_manager zenbu_ncbi_genome_load \
-            /usr/local/bin/
++           zenbu_test_peer zenbu_create_OSCFileDB zenbu_track_builder zenbu_create_filedb zenbu_job_runner zenbu_config_manager \
++           zenbu_ncbi_genome_load zenbu_sql_load_oscfile \
++           zenbu_agent_launcher.sh \
++           /usr/local/bin/
+ 
+ cleanobj :
+ 	rm *.o
+
+
 diff -rupN src/c++/EEDB/WebServices/zenbu_common.cpp src.patched/c++/EEDB/WebServices/zenbu_common.cpp
---- src/c++/EEDB/WebServices/zenbu_common.cpp	2016-06-03 13:50:16.000000000 +0800
-+++ src.patched/c++/EEDB/WebServices/zenbu_common.cpp	2018-08-05 16:09:30.455556719 +0800
-@@ -113,9 +113,9 @@ void  send_email(string email, string su
+--- src/c++/EEDB/WebServices/zenbu_common.cpp	2019-09-23 09:08:40.180482623 +0800
++++ src.patched/c++/EEDB/WebServices/zenbu_common.cpp	2019-09-23 09:23:33.572299330 +0800
+@@ -114,9 +114,9 @@ void  send_email_smtp(string email, stri
    if(!_smtp_server_user.empty()) {
      curl_easy_setopt(curl, CURLOPT_USERNAME, _smtp_server_user.c_str());
      curl_easy_setopt(curl, CURLOPT_PASSWORD, _smtp_server_passwd.c_str());
@@ -25,7 +34,7 @@ diff -rupN src/c++/EEDB/WebServices/zenbu_common.cpp src.patched/c++/EEDB/WebSer
    } 
    
    /* Note that this option isn't strictly required, omitting it will result in
-@@ -143,10 +143,11 @@ void  send_email(string email, string su
+@@ -144,10 +144,11 @@ void  send_email_smtp(string email, stri
     */ 
    string tpath = "/tmp/emsg_" + MQDB::uuid_b64string();
    FILE *msgfp = fopen(tpath.c_str(), "w");

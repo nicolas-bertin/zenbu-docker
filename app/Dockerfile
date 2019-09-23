@@ -85,6 +85,8 @@ RUN set -eux; \
             libfcgi-dev \
             libncurses-dev \
             libssl-dev \
+            libbz2-dev \
+            liblzma-dev \
             default-libmysqlclient-dev \
           #  libmysqlclient-dev \ 
             mysql-client \ 
